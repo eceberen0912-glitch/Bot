@@ -8,6 +8,10 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+# Sayaçlar
+kabuklu_sayaci = 0
+kabuksuz_sayaci = 0
+
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
@@ -17,25 +21,38 @@ async def hello(ctx):
     await ctx.send(f'Hi! I am a bot {bot.user}!')
 
 @bot.command()
-async def heh(ctx, count_heh = 5):
+async def heh(ctx, count_heh=5):
     await ctx.send("he" * count_heh)
 
 @bot.command()
 async def check(ctx):
+    global kabuklu_sayaci, kabuksuz_sayaci
+
     if ctx.message.attachments:
         for attachment in ctx.message.attachments:
             file_name = attachment.filename
             file_url = attachment.url
-            await attachment.save(f"./images/{file_name}")
-            await ctx.send(f"Saved the images to ./images/{file_name}")
-            result = get_class(model_path="keras_model.h5", labels_path="labels.txt", image_path=f"./images/{file_name}")
 
-            if result[0] == "Güvercin\n":
-                await ctx.send("The image is classified as: pigeon")
-            elif result[0] == "Serçe\n":
-                await ctx.send("The image is classified as: sparrow")
+            await attachment.save(f"./images/{file_name}")
+            await ctx.send(f"Saved the image to ./images/{file_name}")
+
+            result = get_class(
+                model_path="keras_model.h5",
+                labels_path="labels.txt",
+                image_path=f"./images/{file_name}"
+            )
+
+            if result[0] == "Kabuklu\n":
+                kabuklu_sayaci += 1
+                await ctx.send("The image is classified as: Shell Peanut")
+                await ctx.send(f"Kabuklu fıstık sayısı: {kabuklu_sayaci}")
+
+            elif result[0] == "Kabuksuz\n":
+                kabuksuz_sayaci += 1
+                await ctx.send("The image is classified as: Shelled Peanut")
+                await ctx.send(f"Kabuksuz fıstık sayısı: {kabuksuz_sayaci}")
 
     else:
-        await ctx.send("You forgot to upload the image:(")
+        await ctx.send("You forgot to upload the image :(")
 
 bot.run("token")
