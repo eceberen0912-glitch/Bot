@@ -8,10 +8,6 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-# Sayaçlar
-kabuklu_sayaci = 0
-kabuksuz_sayaci = 0
-
 @bot.event
 async def on_ready():
     print(f'We have logged in as {bot.user}')
@@ -26,8 +22,6 @@ async def heh(ctx, count_heh=5):
 
 @bot.command()
 async def check(ctx):
-    global kabuklu_sayaci, kabuksuz_sayaci
-
     if ctx.message.attachments:
         for attachment in ctx.message.attachments:
             file_name = attachment.filename
@@ -43,14 +37,10 @@ async def check(ctx):
             )
 
             if result[0] == "Kabuklu\n":
-                kabuklu_sayaci += 1
                 await ctx.send("The image is classified as: Shell Peanut")
-                await ctx.send(f"Kabuklu fıstık sayısı: {kabuklu_sayaci}")
 
             elif result[0] == "Kabuksuz\n":
-                kabuksuz_sayaci += 1
                 await ctx.send("The image is classified as: Shelled Peanut")
-                await ctx.send(f"Kabuksuz fıstık sayısı: {kabuksuz_sayaci}")
 
     else:
         await ctx.send("You forgot to upload the image :(")
