@@ -1,4 +1,5 @@
 import discord
+import os
 from discord.ext import commands
 from flask import ctx
 from model import get_class
@@ -47,5 +48,7 @@ async def check(ctx):
 
     else:
         await ctx.send("You forgot to upload the image :(")
-
+finally:
+    if os.path.exists(path):
+        os.remove(path)
 bot.run("token")
